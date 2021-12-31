@@ -1,0 +1,34 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "hashicorp/bionic64"
+
+  # Network settings
+  config.vm.network "public_network", ip: "192.168.1.99"
+
+  # Resource settings
+  config.vm.provider "virtualbox" do |vm|
+    vm.memory = 4096
+    vm.cpus = 2
+	  vm.name = "java_lab"
+	  #vm.gui = true
+  end
+  
+  # trigger that updates datetime (optional) 
+  config.trigger.after [:up, :resume] do |trigger|
+	  trigger.info = "Adjusting time according to Google.com ..."
+	  trigger.run_remote = {inline: "sudo date -s \"$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z\""}
+  end
+
+  # Install Docker + Docker Compose
+  config.vagrant.plugins = "vagrant-docker-compose"
+  config.vm.provision :docker
+  config.vm.provision :docker_compose
+  
+  # Ansible playbook and roles provisioning
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.galaxy_role_file = 'requirements.yml'
+    ansible.playbook = "playbook.yml"
+    ansible.version = "2.9.27"
+  end
+
+end

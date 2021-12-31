@@ -1,0 +1,3 @@
+# Roles from Ansible Galaxy to install Java and Maven 
+- src: lean_delivery.java
+- src: gantsign.maven

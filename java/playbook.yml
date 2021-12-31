@@ -1,0 +1,25 @@
+---
+- hosts: all
+  gather_facts: true
+  connection: local
+
+  # vars:
+  #   java_maj_ver: 8
+  #   java_min_ver: 312
+  #   mvn_ver: '3.8.1'
+  #   home_dir: /home/vagrant
+   
+        
+- name: Install openjdk java
+  hosts: all
+  roles:
+    - role: lean_delivery.java
+      transport: repositories
+      java_major_version: 8
+      java_minor_version: 312
+
+- name: Install maven
+  hosts: all
+  roles:
+    - role: gantsign.maven
+      maven_version: 3.8.4
